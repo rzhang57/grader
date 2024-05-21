@@ -15,12 +15,12 @@ const WebcamComp = (/*props */) => {
 
             const convertedImage = await fetch(image).then((res) => res.blob());
 
-            await fetch('http://127.0.0.1:5000/analyze', {
+            await fetch('http://localhost:5000/analyze', {
                 method: 'POST',
                 body: convertedImage
             });
         },
-        [webcamRef],
+        [webcamRef]
     );
     return (
     <>
@@ -31,6 +31,7 @@ const WebcamComp = (/*props */) => {
         screenshotFormat="image/jpeg"
         width={1280}
         videoConstraints={videoConstraints}
+        ref={webcamRef}
         />
         <button onClick={capture}>Take photo</button>
     </>  

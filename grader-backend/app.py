@@ -11,5 +11,4 @@ def default():
 @app.route('/analyze', methods=['POST'])
 def analyzeImage():
     print("Received POST request to /analyze")
-    print(request.data)
     return 'Success!'
