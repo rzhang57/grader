@@ -10,10 +10,17 @@ const videoConstraints = {
 const WebcamComp = (/*props */) => {
     const webcamRef = useRef(null);
     const capture = React.useCallback(
-        () => {
+        async () => {
             const image = webcamRef.current.getScreenshot();
+
+            const convertedImage = await fetch(image).then((res) => res.blob());
+
+            await fetch('http://127.0.0.1:5000/analyze', {
+                method: 'POST',
+                body: convertedImage
+            });
         },
-        [webcamRef]
+        [webcamRef],
     );
     return (
     <>
