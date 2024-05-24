@@ -1,5 +1,6 @@
-import React, { useRef } from "react"
+import React, { useRef, useState } from "react"
 import Webcam from "react-webcam"
+import ProcessedImage from "./ProcessedImage.jsx"
 
 const videoConstraints = {
     width: 1280,
@@ -8,17 +9,30 @@ const videoConstraints = {
 };
 
 const WebcamComp = (/*props */) => {
+    
     const webcamRef = useRef(null);
+    const [imageSrc, setImageSrc] = useState('');
+
     const capture = React.useCallback(
         async () => {
-            const image = webcamRef.current.getScreenshot();
+            if (webcamRef.current) {
+                const imageSrc = webcamRef.current.getScreenshot();
 
-            const convertedImage = await fetch(image).then((res) => res.blob());
-
-            await fetch('http://localhost:5000/analyze', {
-                method: 'POST',
-                body: convertedImage
-            });
+                if (imageSrc) {
+                    const convertedImage = await fetch(imageSrc).then((res) => res.blob());
+                    const formData = new FormData();
+                    formData.append('image', convertedImage, 'captured.jpg');
+        
+                    const response = await fetch('http://127.0.0.1:5000/analyze', {
+                        method: 'POST',
+                        body: formData
+                    });
+        
+                    const processedImage = await response.blob();
+                    const imageUrl = URL.createObjectURL(processedImage);
+                    setImageSrc(imageUrl);
+                }
+            }
         },
         [webcamRef]
     );
@@ -34,6 +48,7 @@ const WebcamComp = (/*props */) => {
         ref={webcamRef}
         />
         <button onClick={capture}>Take photo</button>
+        {imageSrc && <ProcessedImage imageSrc={imageSrc}/>}
     </>  
     );
      
