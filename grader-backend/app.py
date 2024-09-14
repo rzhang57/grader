@@ -6,8 +6,6 @@ from PIL import Image
 import numpy as np
 import pytesseract as tess
 
-tess.pytesseract.tesseract_cmd = r'C:\Program Files\Tesseract-OCR\tesseract.exe'
-
 app = Flask(__name__)
 CORS(app, origins="http://localhost:5173")
 
